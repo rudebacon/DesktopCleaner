@@ -1,0 +1,55 @@
+{
+    "version": 0,
+    "model_name": "DeskCleanerRobotAllParts.SLDASM",
+    "project_name": "vacuum simulation",
+    "config_name": "Default",
+    "project_path": "C:\\Users\\joshh\\Documents\\DeskCleanerRobot\\DeskCleanerVersion2.0\\1\\1.xmlconfig",
+    "finished": true,
+    "mesh": {
+        "cells_total": 4859,
+        "cells_fluid": 4859,
+        "cells_solid": 5566,
+        "cells_fluid_containing_solid": 3354
+    },
+    "telemetry": {
+        "prepare_geometry_finished": "21:55:06-0800",
+        "prepare_geometry_total_time": 0,
+        "cpu_time_solver_total": 21,
+        "iteration": 160,
+        "travel": 3.99999999999999,
+        "phys_time": 0.0,
+        "time_step": 0.0,
+        "last_iteration_finished": "21:55:23-0800",
+        "cpu_time_per_last_iter": 0,
+        "cpu_time_left": 0,
+        "iterations_per_travel": 41
+    },
+    "goals": [],
+    "settings": {
+        "default_fluids": [
+            "Air"
+        ],
+        "analysis_type": "internal",
+        "heat_conduction_in_solids": false,
+        "radiation": false,
+        "time_dependent": false,
+        "gravity": true,
+        "flow_type": "laminar and turbulent",
+        "cavitation": false,
+        "high_mach_number": true,
+        "free_surface": false,
+        "structural": false,
+        "electromagnetism": false
+    },
+    "system_info": {
+        "product_name": "Flow Simulation 2023  x64 / 5965 / SOLVER ver. efd_dev.5608_04.02.2022+HMN_Inlet_Rework_V1+HMN_Inlet_Rework_V2",
+        "cad_version": "SOLIDWORKS 2023 SP2.1",
+        "computer_name": "DESKTOP-D4II8IF",
+        "user_name": "joshh",
+        "os": "Windows 11 (or higher) (Version 10.0.22631)",
+        "cpu": "13th Gen Intel(R) Core(TM) i7-1360P",
+        "number_of_cores": 16,
+        "memory_avail": 4030,
+        "memory_total": 16124
+    }
+}

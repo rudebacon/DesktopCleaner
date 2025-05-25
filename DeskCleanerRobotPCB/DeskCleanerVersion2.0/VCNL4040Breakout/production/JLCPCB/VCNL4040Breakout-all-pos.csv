@@ -1,0 +1,6 @@
+Designator,Val,Package,Mid X,Mid Y,Rotation,Layer
+C1,0.1uF,C_0603_1608Metric,128,-98.6,-90,top
+C2,2.2uF,C_0603_1608Metric,126,-92,0,top
+IC1,VCNL4040M3OE,VCNL4040M3OE,132.2,-97.538,180,top
+R1,8.2k,R_0402_1005Metric,126,-93.5,0,top
+R2,22,R_0603_1608Metric,126.5,-98.6,-90,top

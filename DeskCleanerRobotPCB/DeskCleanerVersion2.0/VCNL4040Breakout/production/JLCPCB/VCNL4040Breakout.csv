@@ -1,0 +1,6 @@
+Comment,Designator,Footprint,Qty,LCSC Part Number
+0.1uF,C1,Capacitor_SMD:C_0603_1608Metric,1,C14663
+2.2uF,C2,Capacitor_SMD:C_0603_1608Metric,1,C23630
+VCNL4040M3OE,IC1,VCNL4040M3OE,1,C142526
+8.2k,R1,Resistor_SMD:R_0402_1005Metric,1,C1143
+22,R2,Resistor_SMD:R_0603_1608Metric,1,C23345

@@ -1,0 +1,2 @@
+﻿"M2_screw_head_hole"= 4.5
+"M2_screw_shaft_hole"=2.25

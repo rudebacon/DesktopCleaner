@@ -1,0 +1,27 @@
+#,Reference,Qty,Manufacturer_Name,Manufacturer_Part_Number,Value,Description,Footprint,Type
+1,BC1,1,Texas Instruments,BQ24092DGQR,BQ24092DGQR,"1A, Single-Input, Single-Cell Li-Ion Battery Charger with Operation Over JEITA and 10k NTC",SOP50P490X110-11N,SMD
+2,BM1,1,Vishay,SI2333CDS-T1-GE3,SI2333CDS-T1-GE3,"SI2333CDS-T1-GE3, P-channel MOSFET Transistor 5.1 A 12 V, 3-Pin SOT-23",SOT95P237X112-3N,SMD
+3,"BOOT1,RESET1",2,ALPS Electric,SKHHAJA010,SKHHAJA010,"Tact switch,PCB,SPST,black,0.98N o/force Black Stem Tactile Switch, SPST-NO 50 mA 4.3mm",SKHHALA010,thru-hole
+4,C7,1,,,4.7pF,Unpolarized capacitor,Capacitor_SMD:C_0603_1608Metric,SMD
+5,C13,1,,,1uF,Unpolarized capacitor,Capacitor_SMD:C_0603_1608Metric,SMD
+6,"C1,C10,C11,C12",4,,,0.1uF,Unpolarized capacitor,Capacitor_SMD:C_0603_1608Metric,SMD
+7,"C14,C15",2,Panasonic,EEEFTA471XAP,EEEFTA471XAP,FT SMT Al Elec Capacitor 470uF 10V Panasonic Aluminium Electrolytic Capacitor 470uF 10 V dc 6.3mm Surface Mount D8 series FT SMD lifetime 2000h,EEE0JA331XP,SMD
+8,"C2,C3,C4,C8",4,,,22uF,Unpolarized capacitor,Capacitor_SMD:C_0603_1608Metric,SMD
+9,"C5,C6,C9",3,,,10uF,Unpolarized capacitor,Capacitor_SMD:C_0603_1608Metric,SMD
+10,ESD1,1,STMicroelectronics,USBLC6-2P6,USBLC6-2P6,ESD Suppressors / TVS Diodes High Speed Interface Protection Low Cap,USBLC62P6,SMD
+11,I2Ce1,1,Texas Instruments,PCA9548APWR,PCA9548APWR,8-CHANNEL I2C SWITCH  WITH RESET,SOP65P640X120-24N,SMD
+12,IC8,1,Espressif Systems,ESP32-S3-MINI-1-N8,ESP32-S3-MINI-1-N8,"WiFi Development Tools - 802.11 [Engineering Samples] SMD Module, ESP32-S3FN8, 8 MB SPI Flash, PCB Antenna",ESP32S3MINI1N8,SMD
+13,L2,1,COILCRAFT,XFL4020-152MEC,XFL4020-152MEC,"COILCRAFT - XFL4020-152MEC - Power Inductor (SMD), 1.5 H, 9.1 A, Shielded, 4.1 A, XFL4020",XFL4020152MEC,SMD
+14,LED1,1,Hubei KENTO Elec,KT-0603G,KT-0603G,Green 0603 Light Emitting Diodes (LED) ,LEDC1608X70N,SMD
+15,"LED2,LED3",2,Hubei KENTO Elec,KT-0603R,KT-0603R,Red 0603 Light Emitting Diodes (LED) ,LEDC1608X70N,SMD
+16,MD1,1,Texas Instruments,DRV8835DSSR,DRV8835DSSR,Motor / Motion / Ignition Controllers & Drivers 1.5A Low Vlt Stepper Motor,DRV8835DSSR,SMD
+17,R2,1,,,180k,Resistor,Resistor_SMD:R_0603_1608Metric,SMD
+18,R4,1,,,68k,Resistor,Resistor_SMD:R_0603_1608Metric,SMD
+19,R22,1,,,560,Resistor,Resistor_SMD:R_0402_1005Metric,SMD
+20,"R1,R3",2,,,1M,Resistor,Resistor_SMD:R_0603_1608Metric,SMD
+21,"R20,R24,R33",3,,,1.5k,Resistor,Resistor_SMD:R_0402_1005Metric,SMD
+22,"R21,R25,R26",3,,,10k,Resistor,Resistor_SMD:R_0402_1005Metric,SMD
+23,"R5,R6,R7,R8,R9,R10,R11,R14,R15,R16,R17,R18,R19,R23",14,,,2k,Resistor,Resistor_SMD:R_0402_1005Metric,SMD
+24,S1,1,ALPS Electric,SSSS811101,SSSS811101,Slide Switches SPDT HORZ GRND 1.5mm,SSSS811101,SMD
+25,USB1,1,XKB Connectivity,U254-051N-4BH806,U254-051N-4BH806,USB Connectors SMD RoHS,U254051N4BH806,thru-hole
+26,VR1,1,Texas Instruments,TPS63020DSJR,TPS63020DSJR,Conv DC-DC 1.8V to 5.5V Synchronous Step Down/Synchronous Step Up Single-Out 1.2V to 5.5V 3A 14-Pin VSON EP T/R,TPS63020DSJR,SMD

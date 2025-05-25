@@ -1,0 +1,9 @@
+2025-Feb-20 21:55:23
+Computer name:	DESKTOP-D4II8IF
+Number of cores used in calculation:	16
+Configuration name:	Default
+Project name:	vacuum simulation
+
+Warnings on last iteration: 
+1. A vortex crosses the pressure opening :
+	Boundary Condition : Environment Pressure 1 ; Inlet flow/outlet flow=3.12736
