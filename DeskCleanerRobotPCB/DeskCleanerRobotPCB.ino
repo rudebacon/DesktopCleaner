@@ -175,9 +175,50 @@ const unsigned long behaviorInterval = 30000; // Run a behavior every 30 second
 // ---------- Behavior States ----------
 enum Behavior {NONE, SPOT_CLEAN, SPIRAL};
 // , EDGE_FOLLOWER not used because can get stuck and fall easily
-Behavior currentBehavior = SPIRAL;
+Behavior currentBehavior = SPOT_CLEAN;
 
 // ---------- Helper Functions ---------
+void updateSensors(){
+  // Read proximity from the first sensor
+  selectPCA9548AChannel(0);
+  delay(10);  // Allow time for the channel to switch
+  bottom_right_sensor = vcnl.getProximity();
+  Serial.print("Proximity from bottom_right_sensor, front_right_sensor, bottom_left_sensor, front_middle_sensor: ");
+  Serial.print(bottom_right_sensor);
+
+  // Read proximity from the second sensor
+  selectPCA9548AChannel(1);
+  delay(10);  // Allow time for the channel to switch
+  front_right_sensor = vcnl.getProximity();
+  // Serial.print("Proximity from front_right_sensor: ");
+  Serial.print(" , ");
+  Serial.print(front_right_sensor);
+
+  // Read proximity from the first sensor
+  selectPCA9548AChannel(3);
+  delay(10);  // Allow time for the channel to switch
+  bottom_left_sensor = vcnl.getProximity(); 
+  // Serial.print("Proximity from bottom_left_sensor: ");
+  Serial.print(" , ");
+  Serial.print(bottom_left_sensor);
+
+  // Read proximity from the second sensor
+  selectPCA9548AChannel(7);
+  delay(10);  // Allow time for the channel to switch
+  front_middle_sensor = vcnl.getProximity();
+  // Serial.print("Proximity from front_middle_sensor: ");
+  Serial.print(" , ");
+  Serial.println(front_middle_sensor);
+
+  // Read proximity from the second sensor
+  selectPCA9548AChannel(2);
+  delay(10);  // Allow time for the channel to switch
+  front_left_sensor = vcnl.getProximity();
+  Serial.print("Proximity from Sensor BROKEN: ");
+  Serial.println(front_left_sensor);
+}
+
+
 bool detectCliff() {
   // Return true if any cliff sensor detects a drop
   if (bottom_left_sensor < 100 || bottom_right_sensor < 100){
@@ -187,9 +228,10 @@ bool detectCliff() {
   }
 }
 
+int objectThreshold = 50;
 bool detectObstacle() {
   // Return true if IR or bump sensor is triggered
-  if (front_middle_sensor > 50 || front_right_sensor > 50 || front_left_sensor > 50){
+  if (front_middle_sensor > objectThreshold || front_right_sensor > objectThreshold || front_left_sensor > objectThreshold){
     return true;
   } else {
     return false;
@@ -219,6 +261,12 @@ void turnLeft(){
   digitalWrite(BIN1_PIN, HIGH);  // Forward direction
   analogWrite(BIN2_PIN, 0);
 }
+void turnRight(){
+  digitalWrite(AIN1_PIN, HIGH);  // Forward direction
+  analogWrite(AIN2_PIN, 0);
+  digitalWrite(BIN1_PIN, LOW);  // Revers direction
+  analogWrite(BIN2_PIN, 255);
+}
 
 void goForward(){
   digitalWrite(AIN1_PIN, HIGH);  // Forward direction
@@ -241,16 +289,54 @@ void rotateRandomRight(){
   stopMotors();
 }
 
+bool directionSet = false;
+bool turnLeftDirection;  // 0 or 1
 void avoidObstacle() {
   Serial.println("Avoiding obstacle...");
   stopMotors();
   delay(200);     // Small pause
-  // turnLeft();     // Try turning away
-  // delay(200);     // Turning duration
-  // stopMotors();
-  // CHOOS DIRECTION AND TURN UNTIL NO OBSTACLE
-  rotateRandom();
+  if (!directionSet){ //turn left if object in front of front_right_sensor
+    if(front_right_sensor >= objectThreshold){
+      turnLeftDirection = true;
+    } else {
+      turnLeftDirection = false;
+    }
+    directionSet = true;
+  }
+
+
+  if (turnLeftDirection && directionSet) {
+    Serial.println("Turning left...");
+    turnLeft();
+    delay(200);
+    stopMotors();
+  } else if (!turnLeftDirection && directionSet) {
+    Serial.println("Turning right...");
+    turnRight();
+    delay(200);
+    stopMotors();
+  }
 }
+// void avoidObstacle() {
+//   Serial.println("Avoiding obstacle...");
+//   stopMotors();
+//   delay(200);     // Small pause
+
+//   if (front_right_sensor >= objectThreshold){ //turn left if object in front of front_right_sensor
+//     Serial.println("Turning left...");
+//     turnLeft();
+//     delay(200);
+//     stopMotors();
+//   } else {
+//     Serial.println("Turning right...");
+//     turnRight();
+//     delay(200);
+//     stopMotors();
+//   }
+
+//   // Keep turning until all front sensors are clear
+//   Serial.println("Path clear, resuming...");
+// }
 
 
 bool edgeFollowInitialized = false;
@@ -300,8 +386,16 @@ unsigned long spotLastChangeTime = 0;
 // Set durations (in milliseconds)
 const unsigned long forwardDuration = 1000;
 const unsigned long turnDuration = 3700;
+bool spotCleanModeInitialized = false;
+bool spotCleanTurnDirection = true;
 void spotClean() {
   unsigned long currentTime = millis();
+  if (!spotCleanModeInitialized) {
+    spotState = MOVING_FORWARD; // Every time spiralMotion() begins, set to 5000 interval for the first one
+    spotLastChangeTime = currentTime;
+    spotCleanTurnDirection = random(0, 2); // added to randomize turn direction
+    spotCleanModeInitialized = true;
+  }
   switch (spotState) {
     case MOVING_FORWARD:
       goForward();
@@ -311,10 +405,20 @@ void spotClean() {
       }
       break;
     case TURNING_LEFT:
-      turnLeft();
-      if (currentTime - spotLastChangeTime >= turnDuration) {
-        spotLastChangeTime = currentTime;
-        spotState = MOVING_FORWARD;
+      if (spotCleanTurnDirection){ // added to randomize turn direction
+        turnLeft();
+        if (currentTime - spotLastChangeTime >= turnDuration) {
+          spotLastChangeTime = currentTime;
+          spotCleanTurnDirection = random(0, 2); // added to randomize turn direction
+          spotState = MOVING_FORWARD;
+        }
+      } else {
+        turnRight();
+        if (currentTime - spotLastChangeTime >= turnDuration) {
+          spotLastChangeTime = currentTime;
+          spotCleanTurnDirection = random(0, 2); // added to randomize turn direction
+          spotState = MOVING_FORWARD;
+        }
       }
       break;
   }
@@ -330,6 +434,7 @@ int spiralSpeedRight = 0;                        // Start right speed low
 const int spiralSpeedIncrement = 5;
 const int spiralSpeedMax = 150;
 bool spiralModeInitialized = false;
+
 
 void spiralMotion() {
   unsigned long currentTime = millis();
@@ -473,45 +578,8 @@ void loop() {
 
   esc.writeMicroseconds(1150); // turn on vacuum
 
+  updateSensors();
 
-
-  // Read proximity from the first sensor
-  selectPCA9548AChannel(0);
-  delay(10);  // Allow time for the channel to switch
-  bottom_right_sensor = vcnl.getProximity();
-  Serial.print("Proximity from bottom_right_sensor, front_right_sensor, bottom_left_sensor, front_middle_sensor: ");
-  Serial.print(bottom_right_sensor);
-
-  // Read proximity from the second sensor
-  selectPCA9548AChannel(1);
-  delay(10);  // Allow time for the channel to switch
-  front_right_sensor = vcnl.getProximity();
-  // Serial.print("Proximity from front_right_sensor: ");
-  Serial.print(" , ");
-  Serial.print(front_right_sensor);
-
-  // Read proximity from the first sensor
-  selectPCA9548AChannel(3);
-  delay(10);  // Allow time for the channel to switch
-  bottom_left_sensor = vcnl.getProximity(); 
-  // Serial.print("Proximity from bottom_left_sensor: ");
-  Serial.print(" , ");
-  Serial.print(bottom_left_sensor);
-
-  // Read proximity from the second sensor
-  selectPCA9548AChannel(7);
-  delay(10);  // Allow time for the channel to switch
-  front_middle_sensor = vcnl.getProximity();
-  // Serial.print("Proximity from front_middle_sensor: ");
-  Serial.print(" , ");
-  Serial.println(front_middle_sensor);
-
-  // Read proximity from the second sensor
-  selectPCA9548AChannel(2);
-  delay(10);  // Allow time for the channel to switch
-  front_left_sensor = vcnl.getProximity();
-  Serial.print("Proximity from Sensor BROKEN: ");
-  Serial.println(front_left_sensor);
 
   // if ( front_left_sensor > 100 ){ //|| proximity4 > 100 || proximity5 > 100 || proximity6 > 100 BLINKING LIGHT
   //   digitalWrite(LED_PIN, HIGH); // Turn on LED if 0x60 is found
@@ -569,6 +637,7 @@ void loop() {
 
     unsigned long currentMillis = millis();
     lastRandomRotateTime = currentMillis; // reset spiral randomRotateInterval
+    spotCleanModeInitialized = false; // reset spotCleanMode (start from going forward)
     return; // Skip everything else
   }
   // 2. Medium Priority: Obstacle Avoidance
@@ -576,18 +645,24 @@ void loop() {
     avoidObstacle();
     unsigned long currentMillis = millis();
     lastRandomRotateTime = currentMillis; // reset spiral randomRotateInterval
+    spotCleanModeInitialized = false; // reset spotCleanMode (start from going forward)
     return; // Skip behavior
+  } else{
+    directionSet = false; // reset which direction to turn in avoidObstacle if no obstacles
   }
 
-  // 3. Low Priority: Behavior Logic
-  unsigned long currentMillis = millis();
-  if (currentMillis - lastBehaviorTime >= behaviorInterval) {
-    lastBehaviorTime = currentMillis;
-    currentBehavior = (Behavior)random(1, 3); // change behavior randomly
-  }
-  if (currentBehavior != SPIRAL) {
-    spiralModeInitialized = false;
-  }
+  // // 3. Low Priority: Behavior Logic
+  // unsigned long currentMillis = millis();
+  // if (currentMillis - lastBehaviorTime >= behaviorInterval) {
+  //   lastBehaviorTime = currentMillis;
+  //   currentBehavior = (Behavior)random(1, 3); // change behavior randomly
+  // }
+  // if (currentBehavior != SPIRAL) {
+  //   spiralModeInitialized = false;
+  // }
+  // if (currentBehavior != SPOT_CLEAN) {
+  //   spotCleanModeInitialized = false;
+  // }
   
   runBehavior(); // Like spot clean, spiral, etc.
 
