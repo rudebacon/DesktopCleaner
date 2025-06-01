@@ -376,6 +376,8 @@ void runBehavior() {
   }
 }
 
+
+bool spotCleanTurning = false;
 // State definitions
 enum SpotCleanState {
   MOVING_FORWARD,
@@ -398,6 +400,7 @@ void spotClean() {
   }
   switch (spotState) {
     case MOVING_FORWARD:
+      spotCleanTurning = false;  // Not turning
       goForward();
       if (currentTime - spotLastChangeTime >= forwardDuration) {
         spotLastChangeTime = currentTime;
@@ -405,6 +408,7 @@ void spotClean() {
       }
       break;
     case TURNING_LEFT:
+      spotCleanTurning = true;  // We are turning, block obstacle avoidance
       if (spotCleanTurnDirection){ // added to randomize turn direction
         turnLeft();
         if (currentTime - spotLastChangeTime >= turnDuration) {
@@ -641,7 +645,7 @@ void loop() {
     return; // Skip everything else
   }
   // 2. Medium Priority: Obstacle Avoidance
-  if (detectObstacle()) {
+  if ((!spotCleanTurning || currentBehavior == SPIRAL) && detectObstacle()) {
     avoidObstacle();
     unsigned long currentMillis = millis();
     lastRandomRotateTime = currentMillis; // reset spiral randomRotateInterval
@@ -651,18 +655,18 @@ void loop() {
     directionSet = false; // reset which direction to turn in avoidObstacle if no obstacles
   }
 
-  // // 3. Low Priority: Behavior Logic
-  // unsigned long currentMillis = millis();
-  // if (currentMillis - lastBehaviorTime >= behaviorInterval) {
-  //   lastBehaviorTime = currentMillis;
-  //   currentBehavior = (Behavior)random(1, 3); // change behavior randomly
-  // }
-  // if (currentBehavior != SPIRAL) {
-  //   spiralModeInitialized = false;
-  // }
-  // if (currentBehavior != SPOT_CLEAN) {
-  //   spotCleanModeInitialized = false;
-  // }
+  // 3. Low Priority: Behavior Logic
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastBehaviorTime >= behaviorInterval) {
+    lastBehaviorTime = currentMillis;
+    currentBehavior = (Behavior)random(1, 3); // change behavior randomly
+  }
+  if (currentBehavior != SPIRAL) {
+    spiralModeInitialized = false;
+  }
+  if (currentBehavior != SPOT_CLEAN) {
+    spotCleanModeInitialized = false;
+  }
   
   runBehavior(); // Like spot clean, spiral, etc.
 
